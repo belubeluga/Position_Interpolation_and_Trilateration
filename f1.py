@@ -2,128 +2,47 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as scipy
 
-# función f1(x)
+# función 1 f1(x)
 def f1(x):
     return -0.4 * np.tanh(50 * x) + 0.6
 
-# creamos los valores de x
-#x = np.linspace(-1, 1, 100)
-
-#y = f1(x) # DATASET los valores de f1(x)
-#print(y)
-
-
-""" # para graficar f1(x)
-
-plt.plot(x, y)
-plt.title('$f_1(x) = -0.4 \\tanh(50x) + 0.6$')
-plt.xlabel('x')
-plt.ylabel('$f_1(x)$')
-plt.grid(True)
-plt.show()  """
-
-"""
-lagrangeInterpol = scipy.lagrange(x, y)
-csInterpol = scipy.CubicSpline(x, y)
-
-eLagrange = np.zeros(len(x))
-eCS = np.zeros(len(x))
-
-for i in range(0, len(x)):
-    eLagrange[i] = abs(y[i] - lagrangeInterpol(x[i]))
-    eCS[i] = abs(y[i] - csInterpol(x[i]))
-
-"""
-
-
-
-#print(min(errores))
-#print(np.array(errores))
-""" RUNGE:
-mientras mas iteraciones, menos precision con lagrange
-(de 100 a 1000)
-[1.13797860e-15 1.01432751e-11 1.35347009e-08 6.36585596e-05
- 4.08150754e-02 1.53964245e+02 1.20567439e+06 1.83115839e+09
- 8.21370479e+12]
-"""
-#menor_error = np.min(errores)
-#print("El menor número es:", menor_error) #2.220446049250313e-16
-
-#print(np.array(errores))
+""" para graficar f1(x) """
+# plt.plot(x, y)
+# plt.title('$f_1(x) = -0.4 \\tanh(50x) + 0.6$')
+# plt.xlabel('x')
+# plt.ylabel('$f_1(x)$')
+# plt.grid(True)
+# plt.show() 
 
 """ EVALUANDO EN LOS PUNTOS QUE USAMOS PARA ARMAR EL LAGRANGE """
-errores = []
+erroresEnDataset = [] #errores propios de trabajar con floats
 
 for i in range(1, 50):
-    x1 = np.linspace(-1, 1, i*5)
-    y1 = f1(x1) #nodos/ ground thruths
-    
-    eLagrange = [] #lista con el error en cada aprox
+
+    x1 = np.linspace(-1, 1, i*5) # creamos los valores de x con los que vamos a interpolar
+    y1 = f1(x1) #nodos/ ground thruths / DATASET los valores de f1(x)
 
     lagrangeInterpol1 = scipy.lagrange(x1, y1)
-    
+
+    #análisis del error
+    eLagrange = [] #lista con el error en cada aprox
     for j in range(0, len(x1)):
         eLagrange.append( abs(y1[j] - lagrangeInterpol1(x1[j])) ) 
 
     error = np.median(eLagrange)
-    errores.append((int(error),int(i*5)))
+
+    erroresEnDataset.append((int(error),int(i*5)))
 
 """
 print("EVALUANDO EN LOS PUNTOS DEL DATASET: ")
 print("error aproximando con lagrange: ", np.median(eLagrange))
-print("error aproximando con CubicSpline: ", np.median(eCS))
+print("error aproximando con CubicSpline: ", np.median(eCS)) 
 """
 
-"""
-[[0 5]
- [0 10]
- [0 15]
- [0 20]
- [0 25]
- [0 30]
- [0 35]
- [0 40]
- [0 45]
- [0 50]
- [3 55]
- [153 60]
- [11803 65]
- [1205674 70]
- [78965329 75]
- [1831158387 80]
- [72069876084 85]
- [8213704794514 90]
- [291300544032237 95]
- [27928910720688676 100]
- [1448308174782995200 105]
- [11427274293118636032 110]
- [1895862996187661991936 115]
- [234340558136104129134592 120]
- [4198751461234308794023936 125]
- [149432597950125674101473280 130]
- [30396887744529224164792336384 135]
- [7756939595535888452426563321856 140]
- [337938408253211287951233819607040 145]
- [129821363940507059026615358837489664 150]
- [4857280114421692052496682160555556864 155]
- [1590231500953366119901864430915893067776 160]
- [28396875733979323295871794117159287783424 165]
- [31684727437608643516230001845019461396987904 170]
- [423274642351287591199538813726619784202682368 175]
- [447175176881382786769153587846733708957052829696 180]
- [18311684181460259987058272267335709871912880439296 185]
- [3608341200000178260534330138962466181849213220945920 190]
- [110928105328388821865307673069854514130384513484718080 195]
- [183223284504449905678397404873956483429464093370068500480 200]
- [3977222459689723948893882975433686930485121606645448704000 205]
- [2273209706715081135969486772724818554985537324050745112133632 210]
- [73548393518910896519787768856430437884898994287981240743100416 215]
- [7948477568833776280931144729310413966639016227780773957611814912 220]
- [763279766084078601434348046765522383231290804496522070854226411520 225]
- [406197778131852809963314562135581669276254670218098448868895205883904 230]
- [13167414067038837545894327978786001623674653800027184540516530929008640 235]
- [540901694425420984969506462938139061334389735594990553051318792818262016 240]
- [62064293985216062615152081248740512197657823535761819947906648124384346112 245]]"""
+#menor_error = np.min(erroresEnDataset)
+#print("El menor número es:", menor_error) #2.220446049250313e-16
+
+#print(np.array(errores))
 
 
 """ EVALUACIÓN EN PUNTOS INTERMEDIOS """
@@ -144,7 +63,7 @@ for i in range(1, 20):
         eLagrange2.append( abs(f1(x) - lagrangeInterpol2(x)) )
 
     error2 = np.median(eLagrange2)
-    print(error2)   
+    print(error2, i*2)   
      
 """
 0.4
@@ -167,3 +86,31 @@ for i in range(1, 20):
 0.7976407062002694
 0.7997945460752511
 """    
+
+
+
+
+
+
+""" primer observacion: ELECCIÓN DE CANTIDAD DE DATOS/ LINESPACE PARA LAGRANGE
+RUNGE: mientras mas iteraciones, menos precision con lagrange
+(de 100 a 1000)
+[1.13797860e-15 1.01432751e-11 1.35347009e-08 6.36585596e-05
+ 4.08150754e-02 1.53964245e+02 1.20567439e+06 1.83115839e+09
+ 8.21370479e+12] """
+
+
+
+
+
+"""
+lagrangeInterpol = scipy.lagrange(x, y)
+csInterpol = scipy.CubicSpline(x, y)
+
+eLagrange = np.zeros(len(x))
+eCS = np.zeros(len(x))
+
+for i in range(0, len(x)):
+    eLagrange[i] = abs(y[i] - lagrangeInterpol(x[i]))
+    eCS[i] = abs(y[i] - csInterpol(x[i]))
+"""
