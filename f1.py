@@ -12,15 +12,15 @@ def f1(x):
 #y = f1(x) # DATASET los valores de f1(x)
 #print(y)
 
-# para graficar f1(x)
-"""
+
+""" # para graficar f1(x)
+
 plt.plot(x, y)
 plt.title('$f_1(x) = -0.4 \\tanh(50x) + 0.6$')
 plt.xlabel('x')
 plt.ylabel('$f_1(x)$')
 plt.grid(True)
-plt.show()
-"""
+plt.show()  """
 
 """
 lagrangeInterpol = scipy.lagrange(x, y)
@@ -33,43 +33,48 @@ for i in range(0, len(x)):
     eLagrange[i] = abs(y[i] - lagrangeInterpol(x[i]))
     eCS[i] = abs(y[i] - csInterpol(x[i]))
 
-    
-print("EVALUANDO EN LOS PUNTOS DEL DATASET: ")
-print("error aproximando con lagrange: ", np.median(eLagrange))
-print("error aproximando con CubicSpline: ", np.median(eCS))
 """
-# print("EVALUANDO EN LOS PUNTOS INTERMEDIOS: ")
-errores = []
 
-for i in range(1, 50):
-    x1 = np.linspace(-1, 1, i*5)
-    y1 = f1(x1)
-    
-    eLagrange = []
 
-    lagrangeInterpol1 = scipy.lagrange(x1, y1)
-    
-    for j in range(0, len(x1)):
-        eLagrange.append( abs(y1[j] - lagrangeInterpol1(x1[j])) )
-
-    error = np.median(eLagrange)
-    errores.append((int(error),int(i*5)))
 
 #print(min(errores))
 #print(np.array(errores))
-"""
+""" RUNGE:
 mientras mas iteraciones, menos precision con lagrange
 (de 100 a 1000)
 [1.13797860e-15 1.01432751e-11 1.35347009e-08 6.36585596e-05
  4.08150754e-02 1.53964245e+02 1.20567439e+06 1.83115839e+09
  8.21370479e+12]
- """
+"""
 #menor_error = np.min(errores)
 #print("El menor número es:", menor_error) #2.220446049250313e-16
 
 #print(np.array(errores))
 
-""" EVALUANDO EN LOS PUNTOS QUE USAMOS PARA ARMAR EL LAGRANGE
+""" EVALUANDO EN LOS PUNTOS QUE USAMOS PARA ARMAR EL LAGRANGE """
+errores = []
+
+for i in range(1, 50):
+    x1 = np.linspace(-1, 1, i*5)
+    y1 = f1(x1) #nodos/ ground thruths
+    
+    eLagrange = [] #lista con el error en cada aprox
+
+    lagrangeInterpol1 = scipy.lagrange(x1, y1)
+    
+    for j in range(0, len(x1)):
+        eLagrange.append( abs(y1[j] - lagrangeInterpol1(x1[j])) ) 
+
+    error = np.median(eLagrange)
+    errores.append((int(error),int(i*5)))
+
+"""
+print("EVALUANDO EN LOS PUNTOS DEL DATASET: ")
+print("error aproximando con lagrange: ", np.median(eLagrange))
+print("error aproximando con CubicSpline: ", np.median(eCS))
+"""
+
+"""
 [[0 5]
  [0 10]
  [0 15]
@@ -120,7 +125,10 @@ mientras mas iteraciones, menos precision con lagrange
  [540901694425420984969506462938139061334389735594990553051318792818262016 240]
  [62064293985216062615152081248740512197657823535761819947906648124384346112 245]]"""
 
+
+""" EVALUACIÓN EN PUNTOS INTERMEDIOS """
 errores = []
+
 for i in range(1, 20):
     x2 = np.linspace(-1, 1, i*2)
     y2 = f1(x1)
@@ -136,4 +144,26 @@ for i in range(1, 20):
         eLagrange2.append( abs(f1(x) - lagrangeInterpol2(x)) )
 
     error2 = np.median(eLagrange2)
-    print(error2)    
+    print(error2)   
+     
+"""
+0.4
+0.4
+0.39999999999999997
+0.3999999999999997
+0.3999999999999996
+0.39999999999999986
+0.4000000000000007
+0.39999999999999997
+0.40000000000000024
+0.40000000000000063
+0.4000000000000027
+0.3999999999999995
+0.39999999999999963
+0.3999999999999995
+0.39999999999999847
+0.7693747226407456
+0.7999999975579353
+0.7976407062002694
+0.7997945460752511
+"""    
