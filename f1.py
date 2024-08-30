@@ -60,6 +60,8 @@ min_langrange = 100
 min_cubica = 100
 min_lineal = 100
 
+
+
 for i in range(5,50):
     ##Sub divido mi intervalo de -1 a 1 en 10*i puntos
     x2 = np.linspace(-1, 1, i)
@@ -76,7 +78,8 @@ for i in range(5,50):
 
     
     puntosIntermedios = np.linspace(-1, 1, 2*i, endpoint=False)
-    
+
+   
     for x in puntosIntermedios:
         if x in x2:
             continue
@@ -85,9 +88,9 @@ for i in range(5,50):
         errores_cubica.append( abs(f1(x) - interpol_cubica(x)) )
         errores_lineal.append( abs(f1(x) - interpol_lineal(x)) )
        
-    errores_langrange_mediana = np.median(errores_langrange)
-    errores_cubica_mediana = np.median(errores_cubica)
-    errores_lineal_mediana = np.median(errores_lineal)
+    errores_langrange_mediana = np.mean(errores_langrange)
+    errores_cubica_mediana = np.mean(errores_cubica)
+    errores_lineal_mediana = np.mean(errores_lineal)
 
     errores_langrange_dic[i] = errores_langrange_mediana
     errores_cubica_dic[i] = errores_cubica_mediana
@@ -107,9 +110,6 @@ for i in range(5,50):
     
     
         
-
-
-
 print(f'El mejor error en lagrange fue {min(errores_langrange_dic.values())} con {min(errores_langrange_dic, key=errores_langrange_dic.get)} puntos')
 print(f'El mejor error en cubica fue {min(errores_cubica_dic.values())} con {min(errores_cubica_dic, key=errores_cubica_dic.get)} puntos')
 print(f'El mejor error en lineal fue {min(errores_lineal_dic.values())} con {min(errores_lineal_dic, key=errores_lineal_dic.get)} puntos')
@@ -128,7 +128,7 @@ plt.ylabel("f(x)")
 plt.grid(True)
 
 plt.xlim([-1, 1])
-plt.ylim([0, 2])
+plt.ylim([0, 1.5])
 
 plt.show()
 
