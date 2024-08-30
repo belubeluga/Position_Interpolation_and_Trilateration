@@ -54,14 +54,18 @@ print("error aproximando con CubicSpline: ", np.median(eCS))
 errores_langrange_dic = {}
 errores_cubica_dic = {}
 errores_lineal_dic = {}
+puntos_x = np.linspace(-1, 1, 1000)
 
-for i in range(5,25):
+min_langrange = 100
+min_cubica = 100
+min_lineal = 100
+
+for i in range(5,50):
     ##Sub divido mi intervalo de -1 a 1 en 10*i puntos
     x2 = np.linspace(-1, 1, i)
     #Calculo la imagen
     y2 = f1(x2)
     
-
     errores_langrange = []
     errores_cubica = []
     errores_lineal = []
@@ -71,7 +75,7 @@ for i in range(5,25):
     interpol_cubica = scipy.interp1d(x2, y2, kind='cubic')
 
     
-    puntosIntermedios = np.linspace(-1, 1, 2 * i, endpoint=False)
+    puntosIntermedios = np.linspace(-1, 1, 2*i, endpoint=False)
     
     for x in puntosIntermedios:
         if x in x2:
@@ -80,22 +84,59 @@ for i in range(5,25):
         errores_langrange.append( abs(f1(x) - polinomioDeLangrange(x)) )
         errores_cubica.append( abs(f1(x) - interpol_cubica(x)) )
         errores_lineal.append( abs(f1(x) - interpol_lineal(x)) )
-    
+       
     errores_langrange_mediana = np.median(errores_langrange)
     errores_cubica_mediana = np.median(errores_cubica)
     errores_lineal_mediana = np.median(errores_lineal)
 
-    errores_langrange_dic[i] = (errores_langrange_mediana,max(errores_langrange))
-    errores_cubica_dic[i] = (errores_cubica_mediana,max(errores_cubica))
-    errores_lineal_dic[i] = (errores_lineal_mediana,max(errores_lineal))
+    errores_langrange_dic[i] = errores_langrange_mediana
+    errores_cubica_dic[i] = errores_cubica_mediana
+    errores_lineal_dic[i] = errores_lineal_mediana
 
+    if  errores_langrange_mediana < min_langrange:
+        min_langrange = errores_langrange_mediana
+        lagrange_interpolacion = polinomioDeLangrange(puntos_x)
 
+    if  errores_cubica_mediana < min_cubica:
+        min_cubica = errores_cubica_mediana
+        cubica_interpolacion = interpol_cubica(puntos_x)
+
+    if  errores_lineal_mediana < min_lineal:
+        min_lineal = errores_lineal_mediana
+        lineal_interpolacion = interpol_lineal(puntos_x)
     
+    
+        
+
+
+
 print(f'El mejor error en lagrange fue {min(errores_langrange_dic.values())} con {min(errores_langrange_dic, key=errores_langrange_dic.get)} puntos')
 print(f'El mejor error en cubica fue {min(errores_cubica_dic.values())} con {min(errores_cubica_dic, key=errores_cubica_dic.get)} puntos')
 print(f'El mejor error en lineal fue {min(errores_lineal_dic.values())} con {min(errores_lineal_dic, key=errores_lineal_dic.get)} puntos')
 
-    
+# Ploteo de las funciones interpoladas
+
+plt.figure(figsize=(10, 6))
+plt.plot(puntos_x, f1(puntos_x), label="Función original", color='black')
+plt.plot(puntos_x, lagrange_interpolacion, label="Interpolación Lagrange", linestyle='--')
+plt.plot(puntos_x, cubica_interpolacion, label="Interpolación Cúbica", linestyle='--')
+plt.plot(puntos_x, lineal_interpolacion, label="Interpolación Lineal", linestyle='--')
+plt.legend()
+plt.title("Interpolaciones")
+plt.xlabel("x")
+plt.ylabel("f(x)")
+plt.grid(True)
+
+plt.xlim([-1, 1])
+plt.ylim([0, 2])
+
+plt.show()
+
+
+
+#print(errores_langrange_dic)
+#print(errores_cubica_dic)
+#print(errores_lineal_dic)
 """
 media_de_error cantidad_de_puntos_equisespaciados
 0.4 2
