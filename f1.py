@@ -16,17 +16,20 @@ def f1(x):
 
 """ EVALUANDO EN LOS PUNTOS QUE USAMOS PARA ARMAR EL LAGRANGE """
 """ ( LAGRANGE EQUIESPACIADO ) """
+
 erroresEnDataset = [] #errores propios de trabajar con floats
 
 for i in range(1, 50):
-
+    break
     x1 = np.linspace(-1, 1, i*5) # creamos los valores de x con los que vamos a interpolar
     y1 = f1(x1) #nodos/ ground thruths / DATASET los valores de f1(x)
 
     lagrangeInterpol1 = scipy.lagrange(x1, y1)
 
     #análisis del error
+
     eLagrange = [] #lista con el error en cada aprox
+
     for j in range(0, len(x1)):
         eLagrange.append( abs(y1[j] - lagrangeInterpol1(x1[j])) ) 
 
@@ -47,25 +50,52 @@ print("error aproximando con CubicSpline: ", np.median(eCS))
 
 
 """ EVALUACIÓN EN PUNTOS INTERMEDIOS """
-errores = []
 
-for i in range(1, 20):
-    x2 = np.linspace(-1, 1, i*2)
-    y2 = f1(x1)
-    
-    eLagrange2 = []
+errores_langrange_dic = {}
+errores_cubica_dic = {}
+errores_lineal_dic = {}
 
-    lagrangeInterpol2 = scipy.lagrange(x2, y2)
+for i in range(5,25):
+    ##Sub divido mi intervalo de -1 a 1 en 10*i puntos
+    x2 = np.linspace(-1, 1, i)
+    #Calculo la imagen
+    y2 = f1(x2)
     
-    puntosIntermedios = np.linspace(-1, 1, i*10)
+
+    errores_langrange = []
+    errores_cubica = []
+    errores_lineal = []
+
+    polinomioDeLangrange = scipy.lagrange(x2, y2)
+    interpol_lineal = scipy.interp1d(x2, y2, kind='linear')
+    interpol_cubica = scipy.interp1d(x2, y2, kind='cubic')
+
+    
+    puntosIntermedios = np.linspace(-1, 1, 2 * i, endpoint=False)
+    
     for x in puntosIntermedios:
         if x in x2:
             continue
-        eLagrange2.append( abs(f1(x) - lagrangeInterpol2(x)) )
 
-    error2 = np.median(eLagrange2)
-    print(error2, i*2)   
-     
+        errores_langrange.append( abs(f1(x) - polinomioDeLangrange(x)) )
+        errores_cubica.append( abs(f1(x) - interpol_cubica(x)) )
+        errores_lineal.append( abs(f1(x) - interpol_lineal(x)) )
+    
+    errores_langrange_mediana = np.median(errores_langrange)
+    errores_cubica_mediana = np.median(errores_cubica)
+    errores_lineal_mediana = np.median(errores_lineal)
+
+    errores_langrange_dic[i] = (errores_langrange_mediana,max(errores_langrange))
+    errores_cubica_dic[i] = (errores_cubica_mediana,max(errores_cubica))
+    errores_lineal_dic[i] = (errores_lineal_mediana,max(errores_lineal))
+
+
+    
+print(f'El mejor error en lagrange fue {min(errores_langrange_dic.values())} con {min(errores_langrange_dic, key=errores_langrange_dic.get)} puntos')
+print(f'El mejor error en cubica fue {min(errores_cubica_dic.values())} con {min(errores_cubica_dic, key=errores_cubica_dic.get)} puntos')
+print(f'El mejor error en lineal fue {min(errores_lineal_dic.values())} con {min(errores_lineal_dic, key=errores_lineal_dic.get)} puntos')
+
+    
 """
 media_de_error cantidad_de_puntos_equisespaciados
 0.4 2
