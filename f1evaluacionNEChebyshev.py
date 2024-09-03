@@ -7,7 +7,7 @@ def f1(x):
     return -0.4 * np.tanh(50 * x) + 0.6
 
 # Generar puntos de Chebyshev
-n_points = 10
+n_points = 100
 i = np.arange(n_points)
 x_chebyshev = np.cos((2 * i + 1) / (2 * n_points) * np.pi)
 y_chebyshev = f1(x_chebyshev)
@@ -80,3 +80,37 @@ plt.xlim(-1, 1)
 
 plt.tight_layout()
 plt.show()
+
+"""
+
+Cantidad de nodos usados para interpolar: 2
+Error mediano de interpolación Lagrange: 0.32064488304487426
+Error mediano de interpolación Lineal: 0.3206448830448744
+Error mediano de interpolación Spline: 0.3206448830448744
+
+Cantidad de nodos usados para interpolar: 5
+Error mediano de interpolación Lagrange: 0.15243338319375216
+Error mediano de interpolación Lineal: 0.1239863923210272
+Error mediano de interpolación Spline: 0.15243338319375163
+
+Cantidad de nodos usados para interpolar: 10
+Error mediano de interpolación Lagrange: 0.10550991381668151
+Error mediano de interpolación Lineal: 0.0
+Error mediano de interpolación Spline: 0.027955773456514
+
+Cantidad de nodos usados para interpolar: 20
+Error mediano de interpolación Lagrange: 0.05837265707683721
+Error mediano de interpolación Lineal: 0.0
+Error mediano de interpolación Spline: 0.0036900312004303636
+
+Cantidad de nodos usados para interpolar: 40
+Error mediano de interpolación Lagrange: 0.04601748082792184
+Error mediano de interpolación Lineal: 0.0
+Error mediano de interpolación Spline: 2.9448112304819585e-05
+
+Cantidad de nodos usados para interpolar: 100
+Error mediano de interpolación Lagrange: 1912639347.3261356
+Error mediano de interpolación Lineal: 0.0
+Error mediano de interpolación Spline: 8.448020061280204e-12
+
+"""
