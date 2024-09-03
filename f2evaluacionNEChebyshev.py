@@ -86,3 +86,15 @@ Observaciones: funciona peor con puntos no equiespaciados
 
 HACER: ver como llevar cuenta del error más allá de verlo graficamente
 """
+
+
+"""
+meshgrid 
+griddata #usar
+
+PUNTO 2
+trabajar con curva parametrica en q f va de r a r3 (de tiempo a pos)
+entonces f(T) = x(t) y(t) z(t) pero cada una ve de r en r
+"""
+
+

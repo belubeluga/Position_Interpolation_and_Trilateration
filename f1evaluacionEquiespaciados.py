@@ -8,7 +8,7 @@ def f1(x):
     return -0.4 * np.tanh(50 * x) + 0.6
 
 # Puntos equiespaciados
-n_points = 100
+n_points = 40
 x_eq = np.linspace(-1, 1, n_points)
 y_eq = f1(x_eq)
 
