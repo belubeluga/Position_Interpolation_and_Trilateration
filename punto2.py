@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd 
+import matplotlib.pyplot as plt
+from scipy.interpolate import CubicSpline
 
 #posicionSensores = [(10,0,0),(0,10,0),(0,0,10)]
 
@@ -46,7 +48,10 @@ def newton_raphson( d1, d2, d3, tol=1e-6, max_iter=100):
 #Voy a tirar sobre mis medidas para obtener una posicion(t)
 medidas = pd.read_csv('mnyo_tp01_datasets\medidas.csv',sep=';')
 
-posiciones = []
+t = np.array(medidas.iloc[:,0])
+posiciones_x = []
+posiciones_y = []
+posiciones_z = []
 
 for i in range(len(medidas)):
     #Tomo mis valores de las distancias
@@ -56,11 +61,110 @@ for i in range(len(medidas)):
 
     #Llamo a la funcion y devuelvo el vector de posiciones
     x,y,z = newton_raphson(d1, d2, d3)
-    #Registro la posicion
-    posiciones.append((x,y,z))
+    #Registro la posicion en cada eje
+    posiciones_x.append(x)
+    posiciones_y.append(y)
+    posiciones_z.append(z)
 
-print(posiciones)
+def spline_cubicos(t, posiciones_x, posiciones_y, posiciones_z):
+    # Crear splines cúbicos para interpolar las posiciones en cada eje
+    spline_x = CubicSpline(t, np.array(posiciones_x))
+    spline_y = CubicSpline(t, np.array(posiciones_y))
+    spline_z = CubicSpline(t, np.array(posiciones_z))
+
+    # Definir un nuevo conjunto de puntos de tiempo para la interpolación
+    t_new = np.arange(min(t), max(t),0.01)
+    t_new = np.append(t_new, 10)
+    
+    #Redondear los valores
+    
+    t_new = np.round(t_new,2)
+
+    # Interpolar las posiciones usando los splines
+    x_new = spline_x(t_new)
+    y_new = spline_y(t_new)
+    z_new = spline_z(t_new)
+
+    return t_new, x_new, y_new, z_new
+
+def plot_3d(t, xs, ys, zs, pos_x, pos_y, pos_z):
+    # Graficar la trayectoria interpolada en 3D
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.plot(xs, ys, zs, label='Trayectoria interpolada', color='b')
+    ax.scatter(np.array(pos_x), np.array(pos_y), np.array(pos_z), color='r', label='Posiciones trilateradas')
+    
+    
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    plt.legend()
+    plt.show()
+
+t_interpolado, tray_x_interpolado, tray_y_interpolado, tray_z_interpolado = spline_cubicos(t, posiciones_x, posiciones_y, posiciones_z)
+
+
+plot_3d(t_interpolado, tray_x_interpolado, tray_y_interpolado, tray_z_interpolado, posiciones_x, posiciones_y, posiciones_z)
+
+######
+data = {
+    't_interpolado': t_interpolado,
+    'tray_x_interpolado': tray_x_interpolado,
+    'tray_y_interpolado': tray_y_interpolado,
+    'tray_z_interpolado': tray_z_interpolado
+}
+df = pd.DataFrame(data)
+
+# Guardar el DataFrame en un archivo CSV
+df.to_csv('trayectoria_interpolada.csv', index=False)
+
+
+#Voy a leer la trayectoria y graficarla
+
+trayectoria_df = pd.read_csv(r'mnyo_tp01_datasets\trayectoria.csv',sep=';')
+
+t_reales = np.array(trayectoria_df.iloc[:,0])
+
+tray_x_real = np.array(trayectoria_df.iloc[:,1])
+tray_y_real = np.array(trayectoria_df.iloc[:,2])
+tray_z_real = np.array(trayectoria_df.iloc[:,3])
 
 
 
+eval_errores = []
+for i in range(len(t_reales)):
+    
+    error = np.sqrt((tray_x_real[i] - tray_x_interpolado[i])**2 + (tray_y_real[i] - tray_y_interpolado[i])**2 + (tray_z_real[i] - tray_z_interpolado[i])**2)
+    eval_errores.append((t_reales[i], error))
+    
+#Calcular la mediana del error 
+errores_val = [error for t, error in eval_errores]
+mediana_error = round(np.median(errores_val),5)
+#Calcular el error maximo
+max_error = round(max(errores_val),5)
+
+# Graficar la trayectoria real y la interpolada en 3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+ax.plot(tray_x_interpolado, tray_y_interpolado, tray_z_interpolado, label='Trayectoria interpolada', color='b')
+ax.plot(tray_x_real, tray_y_real, tray_z_real, label='Trayectoria real', color='r')
+
+plt.annotate(f"Error maximo: {max_error}", xy=(0.2, 0.0), xycoords='axes fraction')
+plt.annotate(f"Mediana del error: {mediana_error}", xy=(0.5, 0.0), xycoords='axes fraction')
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+plt.legend()
+plt.show()
+
+#Graficar la evolucion del error en el tiempo
+t_eval, errores = zip(*eval_errores)
+plt.plot(t_eval, errores, label='Error')
+plt.xlabel('Tiempo')
+plt.ylabel('Error')
+plt.axhline(y=0, color='r', linestyle='--')
+plt.legend()
+plt.show()
 
