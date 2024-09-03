@@ -23,6 +23,8 @@ errores_lineal_dic = {}
 
 
 
+
+
 min_langrange = 100000000
 min_cubica = 100000000
 min_lineal = 100000000
