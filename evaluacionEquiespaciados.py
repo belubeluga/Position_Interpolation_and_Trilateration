@@ -8,7 +8,7 @@ def f1(x):
     return -0.4 * np.tanh(50 * x) + 0.6
 
 # Puntos equiespaciados
-n_points = 2
+n_points = 100
 x_eq = np.linspace(-1, 1, n_points)
 y_eq = f1(x_eq)
 
@@ -105,7 +105,10 @@ Error mediano de interpolación Lineal: 0.0
 Error mediano de interpolación Spline: 4.78766336783898e-07
 - lagrange subio un monton, lineal sigue bajo, spline tmb 
 
-
+Cantidad de nodos usados para interpolar:  100
+Error mediano de interpolación Lagrange: 2.1004561978636892e+16
+Error mediano de interpolación Lineal: 0.0
+Error mediano de interpolación Spline: 1.387778780781446e-16
 
 Interpolación Lineal:
 Funciona muy bien con un número creciente de nodos.
