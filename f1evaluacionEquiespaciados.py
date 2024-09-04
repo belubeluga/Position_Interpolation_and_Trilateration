@@ -129,3 +129,45 @@ La interpolación spline es una excelente alternativa cuando se necesita una int
 La interpolación de Lagrange no es recomendada para un gran número de nodos debido a su inestabilidad y aumento del error.
 
 """
+
+nodos = [2,5,10,20,40,100] # números de nodos a evaluar
+errores_lineal = []
+errores_lagrange = []
+errores_spline = []
+
+for n_points in nodos:
+    x_eq = np.linspace(-1, 1, n_points)
+    y_eq = f1(x_eq)
+    
+    # Interpolaciones
+    lagrangeInterpol = lagrange(x_eq, y_eq)
+    linealInterpol = interp1d(x_eq, y_eq, kind='linear')
+    splineInterpol = CubicSpline(x_eq, y_eq)
+    
+    # Limpiar las listas de errores en cada iteración
+    eLineal = []  
+    eLagrange = []
+    eSpline = []
+    
+    for x in puntosIntermedios:
+        eLagrange.append(abs(f1(x) - lagrangeInterpol(x)) / f1(x))
+        eLineal.append(abs(f1(x) - linealInterpol(x)) / f1(x))
+        eSpline.append(abs(f1(x) - splineInterpol(x)) / f1(x))
+    
+    # Almacenar el error relativo mediano
+    errores_lineal.append(np.median(eLineal))
+    errores_lagrange.append(np.median(eLagrange))
+    errores_spline.append(np.median(eSpline))
+
+""" GRAFICO ERRORES RELATIVOS / #NODOS """
+plt.figure(figsize=(10, 6))
+plt.plot(nodos, errores_lineal, label='Interpolación Lineal', marker='o')
+plt.plot(nodos, errores_lagrange, label='Interpolación de Lagrange', marker='o')
+plt.plot(nodos, errores_spline, label='Interpolación Spline Cúbica', marker='o')
+plt.xlabel('Número de Nodos')
+plt.ylabel('Error Relativo Mediano')
+plt.title('Error Relativo Mediano vs Número de Nodos')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()

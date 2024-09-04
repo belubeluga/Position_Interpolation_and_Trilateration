@@ -34,6 +34,14 @@ z_linear_interpol = griddata(points, values, (grid_x, grid_y), method='linear')
 # cúbica
 z_cubic_interpol = griddata(points, values, (grid_x, grid_y), method='cubic')
 
+# Calcular el error absoluto
+error_abs_linear = np.abs(z_inter - z_linear_interpol)
+error_abs_cubic = np.abs(z_inter - z_cubic_interpol)
+
+# Calcular el error relativo
+error_rel_linear = error_abs_linear / np.abs(z_inter)
+error_rel_cubic = error_abs_cubic / np.abs(z_inter)
+
 """ GRÁFICOS 3D """
 fig = plt.figure(figsize=(18, 6))
 
@@ -55,6 +63,7 @@ ax3.set_title('Interpolación Cúbica')
 plt.tight_layout()
 plt.show()
 
+
 """ GRÁFICOS """
 plt.figure(figsize=(18, 6))
 
@@ -72,6 +81,37 @@ plt.subplot(1, 3, 3) # Interpolación cúbica
 plt.contourf(grid_x, grid_y, z_cubic_interpol, cmap='viridis')
 plt.title('Interpolación Cúbica')
 plt.colorbar()
+
+plt.tight_layout()
+plt.show()
+
+
+""" VISUALIZACIÓN DEL ERROR EN 3D """
+
+# Error absoluto
+fig = plt.figure(figsize=(18, 6))
+
+ax1 = fig.add_subplot(121, projection='3d')
+ax1.plot_surface(grid_x, grid_y, error_abs_linear, cmap='inferno')
+ax1.set_title('Error Absoluto - Interpolación Lineal')
+
+ax2 = fig.add_subplot(122, projection='3d')
+ax2.plot_surface(grid_x, grid_y, error_abs_cubic, cmap='inferno')
+ax2.set_title('Error Absoluto - Interpolación Cúbica')
+
+plt.tight_layout()
+plt.show()
+
+# Error relativo
+fig = plt.figure(figsize=(18, 6))
+
+ax1 = fig.add_subplot(121, projection='3d')
+ax1.plot_surface(grid_x, grid_y, error_rel_linear, cmap='inferno')
+ax1.set_title('Error Relativo - Interpolación Lineal')
+
+ax2 = fig.add_subplot(122, projection='3d')
+ax2.plot_surface(grid_x, grid_y, error_rel_cubic, cmap='inferno')
+ax2.set_title('Error Relativo - Interpolación Cúbica')
 
 plt.tight_layout()
 plt.show()
