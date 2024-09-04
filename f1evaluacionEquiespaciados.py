@@ -130,7 +130,7 @@ La interpolación de Lagrange no es recomendada para un gran número de nodos de
 
 """
 
-nodos = [2,5,10,20,40,100] # números de nodos a evaluar
+nodos = list(range(2, 100, 2)) # números de nodos a evaluar
 errores_lineal = []
 errores_lagrange = []
 errores_spline = []

@@ -7,7 +7,7 @@ def f1(x):
     return -0.4 * np.tanh(50 * x) + 0.6
 
 # Generar puntos de Chebyshev
-n_points = 100
+n_points = 50
 i = np.arange(n_points)
 x_chebyshev = np.cos((2 * i + 1) / (2 * n_points) * np.pi)
 y_chebyshev = f1(x_chebyshev)
@@ -114,3 +114,56 @@ Error mediano de interpolación Lineal: 0.0
 Error mediano de interpolación Spline: 8.448020061280204e-12
 
 """
+
+
+# Números de nodos a evaluar
+nodos = list(range(2, 100, 2))  # números de nodos a evaluar
+errores_lineal = []
+errores_lagrange = []
+errores_spline = []
+
+for n_points in nodos:
+    # Calcular nodos de Chebyshev
+    x_chebyshev = np.cos((2 * np.arange(n_points) + 1) / (2 * n_points) * np.pi)
+    y_eq = f1(x_chebyshev)
+    
+    # Ordenar los nodos de Chebyshev y sus valores
+    sorted_indices = np.argsort(x_chebyshev)
+    x_chebyshev_sorted = x_chebyshev[sorted_indices]
+    y_eq_sorted = y_eq[sorted_indices]
+    
+    # Interpolaciones
+    lagrangeInterpol = lagrange(x_chebyshev_sorted, y_eq_sorted)
+    linealInterpol = interp1d(x_chebyshev_sorted, y_eq_sorted, kind='linear', bounds_error=False, fill_value="extrapolate")
+    splineInterpol = CubicSpline(x_chebyshev_sorted, y_eq_sorted, extrapolate=True)
+    
+    # Limpiar las listas de errores en cada iteración
+    eLineal = []  
+    eLagrange = []
+    eSpline = []
+    
+    # Puntos de evaluación INTERMEDIOS (dentro del rango de los nodos de Chebyshev)
+    puntosIntermedios = np.linspace(x_chebyshev_sorted[0], x_chebyshev_sorted[-1], 500)
+    
+    for x in puntosIntermedios:
+        eLagrange.append(abs(f1(x) - lagrangeInterpol(x)) / abs(f1(x)))
+        eLineal.append(abs(f1(x) - linealInterpol(x)) / abs(f1(x)))
+        eSpline.append(abs(f1(x) - splineInterpol(x)) / abs(f1(x)))
+    
+    # Almacenar el error relativo mediano
+    errores_lineal.append(np.median(eLineal))
+    errores_lagrange.append(np.median(eLagrange))
+    errores_spline.append(np.median(eSpline))
+
+# Graficar los errores relativos
+plt.figure(figsize=(10, 6))
+plt.plot(nodos, errores_lineal, label='Interpolación Lineal', marker='o', linestyle='-')
+plt.plot(nodos, errores_lagrange, label='Interpolación de Lagrange', marker='o', linestyle='--')
+plt.plot(nodos, errores_spline, label='Interpolación Spline Cúbica', marker='o', linestyle='-.')
+plt.xlabel('Número de Nodos')
+plt.ylabel('Error Relativo Mediano')
+plt.title('Error Relativo Mediano vs Número de Nodos (Nodos de Chebyshev)')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()

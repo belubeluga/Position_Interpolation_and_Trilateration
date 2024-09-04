@@ -141,3 +141,7 @@ ax2.set_title('Error Relativo - Interpolación Cúbica')
 
 plt.tight_layout()
 plt.show()
+
+
+
+
