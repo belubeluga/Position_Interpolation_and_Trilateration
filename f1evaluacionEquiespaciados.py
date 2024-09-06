@@ -8,7 +8,7 @@ def f1(x):
     return -0.4 * np.tanh(50 * x) + 0.6
 
 # Puntos equiespaciados
-n_points = 40
+n_points = 20
 x_eq = np.linspace(-1, 1, n_points)
 y_eq = f1(x_eq)
 
@@ -129,45 +129,40 @@ La interpolación spline es una excelente alternativa cuando se necesita una int
 La interpolación de Lagrange no es recomendada para un gran número de nodos debido a su inestabilidad y aumento del error.
 
 """
+error_rel_lineal = np.abs(y_intermedios - y_linear_intermedios) / np.abs(y_intermedios)
+error_rel_lagrange = np.abs(y_intermedios - y_lagrange_intermedios) / np.abs(y_intermedios)
+error_rel_spline = np.abs(y_intermedios - y_spline_intermedios) / np.abs(y_intermedios)
 
-nodos = list(range(2, 100, 2)) # números de nodos a evaluar
-errores_lineal = []
-errores_lagrange = []
-errores_spline = []
+# Gráficos de los errores relativos
+plt.figure(figsize=(10, 8))
 
-for n_points in nodos:
-    x_eq = np.linspace(-1, 1, n_points)
-    y_eq = f1(x_eq)
-    
-    # Interpolaciones
-    lagrangeInterpol = lagrange(x_eq, y_eq)
-    linealInterpol = interp1d(x_eq, y_eq, kind='linear')
-    splineInterpol = CubicSpline(x_eq, y_eq)
-    
-    # Limpiar las listas de errores en cada iteración
-    eLineal = []  
-    eLagrange = []
-    eSpline = []
-    
-    for x in puntosIntermedios:
-        eLagrange.append(abs(f1(x) - lagrangeInterpol(x)) / f1(x))
-        eLineal.append(abs(f1(x) - linealInterpol(x)) / f1(x))
-        eSpline.append(abs(f1(x) - splineInterpol(x)) / f1(x))
-    
-    # Almacenar el error relativo mediano
-    errores_lineal.append(np.median(eLineal))
-    errores_lagrange.append(np.median(eLagrange))
-    errores_spline.append(np.median(eSpline))
-
-""" GRAFICO ERRORES RELATIVOS / #NODOS """
-plt.figure(figsize=(10, 6))
-plt.plot(nodos, errores_lineal, label='Interpolación Lineal', marker='o')
-plt.plot(nodos, errores_lagrange, label='Interpolación de Lagrange', marker='o')
-plt.plot(nodos, errores_spline, label='Interpolación Spline Cúbica', marker='o')
-plt.xlabel('Número de Nodos')
-plt.ylabel('Error Relativo Mediano')
-plt.title('Error Relativo Mediano vs Número de Nodos')
-plt.legend()
+# Gráfico del error relativo para la interpolación lineal
+plt.subplot(3, 1, 1)
+plt.plot(puntosIntermedios, error_rel_lineal, color='orange', label=f'Error Relativo Lineal - {n_points} nodos')
+plt.title('Error Relativo - Interpolación Lineal')
+plt.xlabel('x')
+plt.ylabel('Error Relativo')
 plt.grid(True)
+plt.legend()
+
+# Gráfico del error relativo para la interpolación de Lagrange
+plt.subplot(3, 1, 3)
+plt.plot(puntosIntermedios, error_rel_lagrange, color='green', label=f'Error Relativo Lagrange - {n_points} nodos')
+plt.title('Error Relativo - Interpolación de Lagrange')
+plt.xlabel('x')
+plt.ylabel('Error Relativo')
+plt.grid(True)
+plt.legend()
+
+# Gráfico del error relativo para la interpolación spline
+plt.subplot(3, 1, 2)
+plt.plot(puntosIntermedios, error_rel_spline, color='red', label=f'Error Relativo Spline - {n_points} nodos')
+plt.title('Error Relativo - Interpolación Spline')
+plt.xlabel('x')
+plt.ylabel('Error Relativo')
+plt.grid(True)
+plt.legend()
+
+
 plt.tight_layout()
 plt.show()
