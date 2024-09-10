@@ -10,6 +10,7 @@ def f2(x1, x2):
     term4 = -0.2 * np.exp(-((9 * x1 - 7)**2 / 4) - ((9 * x2 - 3)**2 / 4))
     return term1 + term2 + term3 + term4
 
+# Puntos equiespaciados
 n_points = 20
 x_eq = np.linspace(-1, 1, n_points)
 y_eq = np.linspace(-1, 1, n_points)
@@ -21,18 +22,22 @@ puntosIntermedios = np.linspace(-1, 1, 500)
 x1_inter, x2_inter = np.meshgrid(puntosIntermedios, puntosIntermedios)
 z_inter = f2(x1_inter, x2_inter)
 
-
+# Interpolaciones
 points = np.array([x1_eq.flatten(), x2_eq.flatten()]).T
 values = z_eq.flatten()
 grid_x, grid_y = np.mgrid[-1:1:500j, -1:1:500j]
 
-
+# lineal
 z_linear_interpol = griddata(points, values, (grid_x, grid_y), method='linear')
+
+# cúbica
 z_cubic_interpol = griddata(points, values, (grid_x, grid_y), method='cubic')
 
+# Calcular el error absoluto
 error_abs_linear = np.abs(z_inter - z_linear_interpol)
 error_abs_cubic = np.abs(z_inter - z_cubic_interpol)
 
+# Calcular el error relativo
 error_linear = error_abs_linear / np.abs(z_inter)
 error_cubic = error_abs_cubic / np.abs(z_inter)
 
@@ -98,7 +103,8 @@ for n_points in nodos:
     y_eq = np.linspace(-1, 1, n_points)
     x1_eq, x2_eq = np.meshgrid(x_eq, y_eq)
     z_eq = f2(x1_eq, x2_eq)
-
+    
+    # Interpolaciones
     points = np.array([x1_eq.flatten(), x2_eq.flatten()]).T
     values = z_eq.flatten()
     grid_x, grid_y = np.mgrid[-1:1:500j, -1:1:500j]
@@ -106,9 +112,11 @@ for n_points in nodos:
     z_linear_interpol = griddata(points, values, (grid_x, grid_y), method='linear')
     z_cubic_interpol = griddata(points, values, (grid_x, grid_y), method='cubic')
     
+    # Calcular el error relativo
     error_linear = np.abs(z_inter - z_linear_interpol) 
     error_cubic = np.abs(z_inter - z_cubic_interpol) 
-
+    
+    # Almacenar el error relativo mediano
     errores_lineal.append(np.median(error_linear))
     errores_cubic.append(np.median(error_cubic))
 
