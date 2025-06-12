@@ -115,18 +115,7 @@ Las figuras listadas en el informe deben copiarse a la carpeta `figuras/` (no in
 
 ---
 
-## 5. Referencias bibliográficas
+## 5. Contacto
 
-Las implementaciones siguen principalmente:
-
-* Kincaid & Cheney – *Numerical Analysis* (cap. 3 & 4).
-* Burden, Faires & Burden – *Numerical Analysis*, 11 ed. (cap. 3, 6).
-* Trefethen – *Approximation Theory and Approximation Practice* (Chebyshev nodes).
-* Strang & Borre – *Algorithms for Global Positioning*, MIT (trilateración/Newton).
-
----
-
-## 6. Contacto
-
-*Belén Götz – Franco Ortega*  
+*Belén Götz – Francisco Ortega*  
 Métodos Numéricos y Optimización – UDESA 2024 
