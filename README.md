@@ -1,25 +1,41 @@
-# Métodos Numéricos y Optimización – Segundo Semestre 2024
+# Numerical Methods and Optimization – Second Semester 2024
 
-## Análisis experimental y comparativo de Métodos Numéricos para la Interpolación y Trilateración de posiciones
+## Experimental and Comparative Analysis of Numerical Methods for Interpolation and Position Trilateration
 
-Este repositorio contiene los códigos, datos y figuras empleados para el informe técnico que acompaña este análisis.  
-En el informe (máx. 20 páginas) se analizan los siguientes experimentos numéricos:
-
-1. **Efecto del número y la posición de los puntos de interpolación**  
-   a. Función 1 – $f_1(x)= -0.4\,\tanh(50x)+0.6$ en $x\in[-1,1]$  
-   b. Función 2 – $f_2(x_1,x_2)$ (definida en el enunciado) en $(x_1,x_2)\in[-1,1]^2$  
-   Distintos esquemas de interpolación (Lagrange, lineal y splines/CubicSpline) se comparan usando:
-   • nodos **equiespaciados**  
-   • nodos **no-equiespaciados** (polos de Chebyshev)  
-   Se reporta la precisión (error absoluto/relativo) en función de la cantidad y la distribución de nodos.
-
-2. **Trilateración de posiciones en 3D**  
-   A partir de distancias exactas medidas por tres sensores estáticos se reconstruye la trayectoria de una partícula utilizando el **método de Newton–Raphson**.  
-   Luego se genera una trayectoria suave mediante **splines cúbicos** y se compara contra la trayectoria real.
+This repository contains the code, data, and figures used in the technical report accompanying this analysis.  
+The report (max. 20 pages) presents the following numerical experiments:
 
 ---
 
-## 1. Estructura del repositorio
+### 1. Effect of the Number and Position of Interpolation Points
+
+- **Function 1:**  
+  \( f_1(x) = -0.4\,\tanh(50x) + 0.6 \), for \( x \in [-1, 1] \)
+
+- **Function 2:**  
+  \( f_2(x_1, x_2) \), defined in the assignment, for \( (x_1, x_2) \in [-1, 1]^2 \)
+
+**Interpolation schemes compared:**
+- Lagrange
+- Linear
+- Cubic splines (`CubicSpline`)
+
+**Node types used:**
+- **Equally spaced nodes**
+- **Non-uniform nodes** (Chebyshev poles)
+
+Accuracy (absolute and relative error) is reported as a function of the number and distribution of nodes.
+
+---
+
+### 2. 3D Position Trilateration
+
+Using exact distances measured by three static sensors, the trajectory of a particle is reconstructed via the **Newton–Raphson method**.  
+A smooth trajectory is then generated using **cubic splines** and compared to the real (ground-truth) trajectory.
+
+---
+
+## 📁 1. Repository Structure
 
 ```
 .
@@ -42,23 +58,11 @@ En el informe (máx. 20 páginas) se analizan los siguientes experimentos numér
 └── .venv/ , .git/ …
 ```
 
-> Las rutas se expresan relativas a la raíz del proyecto.
+> All paths are relative to the root of the project.
 
 ---
 
-## 2. Requisitos
-
-Python ≥ 3.9
-
-Instalar dependencias en un entorno virtual:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-El archivo `requirements.txt` (no versionado por defecto) debe incluir:
+## ✅ 2. Requirements
 
 ```
 numpy
@@ -69,53 +73,60 @@ scipy
 
 ---
 
-## 3. Cómo reproducir cada experimento
+## 3. How to reproduce each experiment
+All paths mentioned here are relative to the `TP 1/TP1 MÉTODOS` directory.
+All commands should be run from the **project root**.
 
-Todas las rutas que se indican se ejecutan desde el directorio `TP 1/TP1 MÉTODOS`.
-Todos los comandos se ejecutan desde la **raíz del proyecto**.
+### 3.1 Interpolation – Function $f_1(x)$
 
-### 3.1 Interpolación – Función $f_1(x)$
-
-| Notebook | Nodos | Descripción | Salidas (principales) |
+| Notebook | Nodes | Description | Main Outputs |
 |----------|-------|-------------|-----------------------|
-| `Interpolación_f1.ipynb` | equiespaciados / Chebyshev (seleccionables) | Interpolación con Lagrange, lineal y spline; análisis del error vs número de nodos | Gráficos de función, error relativo y evolución del error. |
+| `Interpolación_f1.ipynb` | Equally spaced / Chebyshev (selectable) | Interpolation using Lagrange, linear, and spline methods; error analysis by node count | Function plots, relative error, error evolution |
 
-Los gráficos se guardan automáticamente en el mismo directorio y se muestran por pantalla.
+Plots are automatically saved in the same directory and also displayed during execution.
 
-### 3.2 Interpolación – Función $f_2(x_1,x_2)$
+### 3.2 Interpolation – Function $f_2(x_1,x_2)$
 
-| Notebook | Nodos | Métodos | Salidas |
+| Notebook | Nodes | Methods | Main Outputs |
 |----------|-------|---------|---------|
-| `Interpolación_f2.ipynb` | equiespaciados / Chebyshev (seleccionables) | Interpolación lineal y cúbica vía `griddata` | Superficies 3D, mapas de calor y evolución del error. |
+| `Interpolación_f2.ipynb` | Equally spaced / Chebyshev (selectable) | Linear and cubic interpolation via `griddata` | 3D surfaces, heatmaps, error plots, error evolution |
 
-> Nota: la adaptación Chebyshev se implementa generando la malla con la transformada de coseno; para la versión 2D ambas coordenadas comparten la misma regla.
+> Note: The Chebyshev adaptation is implemented using a cosine transform; in the 2D case, both axes follow the same rule..
 
-### 3.3 Trilateración 3D
+### 3.3 Trilateration 3D
 
-Abrir y ejecutar todas las celdas de:
+To run the experiment, open and execute all cells in:
 
 ```bash
 jupyter notebook Trilateración_de_posiciones.ipynb
 ```
 
-El notebook realiza los siguientes pasos:
 
-1. Carga `medidas.csv` con las distancias $d_1,d_2,d_3(t)$.
-2. Resuelve las ecuaciones de trilateración aplicando **Newton–Raphson**.
-3. Almacena las posiciones reconstruidas en `posiciones relativas.csv` y grafica la convergencia por iteración.
-4. Ajusta **splines cúbicos** para suavizar la trayectoria y la compara con el ground-truth.
-5. Guarda `trayectoria_interpolada.csv` y genera las figuras `posiciones.png`, `trayectoria_real_interpolada.png` y `evolucion_error.png`.
+### 🔁 Steps Performed in the Notebook
+
+The notebook performs the following steps:
+
+1. Loads `medidas.csv` with distance data \( d_1, d_2, d_3(t) \)
+2. Solves the trilateration equations using the **Newton–Raphson method**
+3. Saves the reconstructed positions to `posiciones relativas.csv`
+4. Plots convergence per iteration
+5. Applies **cubic splines** to smooth the trajectory and compares it to the real one
+6. Saves:
+   - `trayectoria_interpolada.csv`
+   - Figures:
+     - `posiciones.png`
+     - `trayectoria_real_interpolada.png`
+     - `evolucion_error.png`
 
 ---
 
-## 4. Resultados y figuras
+### 📊 4. Results and Figures
 
-Todos los gráficos y archivos CSV que se generan se ubican junto a cada script para facilitar la referencia desde el informe.  
-Las figuras listadas en el informe deben copiarse a la carpeta `figuras/` (no incluida en el repositorio) para mantener el documento limpio.
+All plots and CSV files generated are saved in the same directory as each script, making them easy to reference in the report.  
+Figures mentioned in the report should be manually copied to the `figuras/` folder (not included in the repository) to keep the project structure clean and organized.
 
----
 
-## 5. Contacto
+## 5. Contact
 
 *Belén Götz – Francisco Ortega*  
 Métodos Numéricos y Optimización – UDESA 2024 
