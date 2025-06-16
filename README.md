@@ -128,5 +128,5 @@ Figures mentioned in the report should be manually copied to the `figuras/` fold
 
 ## 5. Contact
 
-Francisco Ortega – Belén Götz*  
+*Francisco Ortega – Belén Götz*  
 Métodos Numéricos y Optimización – UDESA 2024 
